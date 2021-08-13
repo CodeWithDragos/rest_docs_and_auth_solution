@@ -93,17 +93,43 @@ app.get("/api/products", async (request, response) => {
 })
 
 // Create a Product
-app.post("/api/products", async(request, response) => {
-    const productData = request.body;
-    const newProduct = await ProductModel.create(productData)
-    response.json(newProduct)
+app.post("/products", async(request, response) => {
+    try {
+        const productData = request.body;
+        const newProduct = await ProductModel.create(productData)
+        response.json(newProduct)
+    } catch (error) {
+        logger.error(error)
+        response.status(500).json({
+            code: "ERR_6779",
+            message: "An internal error has occurred"
+        })
+    }
+
 })
 
 // Get product by Id
-app.get("/api/products/:id", async(request, response) => {
-    const productId = request.params.id;
-    const newProduct = await ProductModel.findById(productId)
-    response.json(newProduct)
+app.get("/products/:id", async(request, response) => {
+    try {
+        const productId = request.params.id;
+        if(productId.length == 0){
+            response.status(400).send(`Please provide a valid product id`)
+        }else{
+            const newProduct = await ProductModel.findById(productId)
+            if(!newProduct){
+                response.status(404).send(`Product with id: ${productId} cannot be found`)
+            }else{
+                response.json(newProduct) 
+            }
+        }
+    } catch (error) {
+        logger.error(error)
+        response.status(500).json({
+            code: "ERR_6779",
+            message: "An internal error has occurred"
+        })
+    }
+
 })
 
 // Delete a product by Id
