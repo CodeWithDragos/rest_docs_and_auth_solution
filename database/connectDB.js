@@ -1,11 +1,9 @@
 const mongoose = require("mongoose");
-
-// TODO: Add your Mongo Url here
-const mongoURL = "mongodb+srv://rest-user:rest-pass@cluster0.pmjzp.mongodb.net/rest-db?retryWrites=true&w=majority";
+const settings = require("../settings")
 
 async function connectToDb() {
     try {
-        await mongoose.connect(mongoURL, {
+        await mongoose.connect(settings.databaseUrl, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
           });
